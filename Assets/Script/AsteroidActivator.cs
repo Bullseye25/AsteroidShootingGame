@@ -14,6 +14,14 @@ public class AsteroidActivator : MonoBehaviour
             return;
     }
 
+    void OnTriggerExit2D(Collider2D _object)
+    {
+        if (!Is(_object, "Player") && Is(_object, "Astro"))
+            DeactivateAsteroid(_object);
+        else
+            return;
+    }
+
     private bool Is(Collider2D _object, string _objectName)
     {
         return  _object.gameObject != null && _object.gameObject.tag == _objectName;
@@ -21,13 +29,18 @@ public class AsteroidActivator : MonoBehaviour
 
     private void ActivateAsteroid(Collider2D _object)
     {
-        _object.tag = "Untagged";
-        
         Rigidbody2D _rigidbody = _object.GetComponent<Rigidbody2D>();
 
         float _force = Random.Range(m_miniToPush, m_maxToPush) * Time.smoothDeltaTime;
 
         _rigidbody.AddForce(GetRandomDirection() * _force, ForceMode2D.Impulse);
+    }
+
+    private void DeactivateAsteroid(Collider2D _object)
+    {
+        Rigidbody2D _rigidbody = _object.GetComponent<Rigidbody2D>();
+
+        _rigidbody.velocity = Vector2.zero;
     }
 
     private Vector3 GetRandomDirection()
