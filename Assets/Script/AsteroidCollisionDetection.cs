@@ -1,25 +1,30 @@
 ﻿using UnityEngine;
 
-public class AsteroidCollisionDetection : MonoBehaviour 
+public class AsteroidCollisionDetection : MonoBehaviour
 {
     void OnTriggerEnter2D(Collider2D _object)
     {
-        if (Is(_object, "Bullet"))
+        Debug.Log("Enter: " + _object.name);
+
+        if (IsColliding(_object, "Bullet"))
         {
             _object.gameObject.SetActive(false);
             UIManager.instance.AddScore();
         }
         else
             return;
-        
+
+
         this.gameObject.SetActive(false);
     }
 
     private void OnCollisionEnter2D(Collision2D _object)
     {
-        if (Is(_object, "Player"))
+        Debug.Log("Enter: " + _object.gameObject.name);
+
+        if (IsColliding(_object, "Player"))
         {
-            _object.gameObject.SetActive(false);   
+            _object.gameObject.SetActive(false);
             UIManager.instance.GameEndStats("GameOver");
         }
         else
@@ -28,12 +33,12 @@ public class AsteroidCollisionDetection : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-    private bool Is(Collider2D _object, string nameOfObject)
+    private bool IsColliding(Collider2D _object, string nameOfObject)
     {
         return _object.gameObject.tag == nameOfObject;
     }
 
-    private bool Is(Collision2D _object, string nameOfObject)
+    private bool IsColliding(Collision2D _object, string nameOfObject)
     {
         return _object.gameObject.tag == nameOfObject;
     }

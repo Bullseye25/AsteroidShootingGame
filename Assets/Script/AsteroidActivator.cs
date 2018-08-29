@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AsteroidActivator : MonoBehaviour 
+public class AsteroidActivator : MonoBehaviour
 {
     public float m_miniToPush, m_maxToPush;
 
     void OnTriggerEnter2D(Collider2D _object)
     {
-        if (!Is(_object, "Player") && Is(_object, "Astro"))
+        if (!IsColliding(_object, "Player") && IsColliding(_object, "Astro"))
             ActivateAsteroid(_object);
         else
             return;
@@ -16,20 +16,22 @@ public class AsteroidActivator : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D _object)
     {
-        if (!Is(_object, "Player") && Is(_object, "Astro"))
+        if (!IsColliding(_object, "Player") && IsColliding(_object, "Astro"))
             DeactivateAsteroid(_object);
         else
             return;
     }
 
-    private bool Is(Collider2D _object, string _objectName)
+    private bool IsColliding(Collider2D _object, string _objectName)
     {
-        return  _object.gameObject != null && _object.gameObject.tag == _objectName;
+        return _object.gameObject != null && _object.gameObject.tag == _objectName;
     }
 
     private void ActivateAsteroid(Collider2D _object)
     {
-        Rigidbody2D _rigidbody = _object.GetComponent<Rigidbody2D>();
+        var _rigidbody = _object.GetComponent<Rigidbody2D>();
+
+        _rigidbody.WakeUp();
 
         float _force = Random.Range(m_miniToPush, m_maxToPush) * Time.smoothDeltaTime;
 
@@ -38,7 +40,9 @@ public class AsteroidActivator : MonoBehaviour
 
     private void DeactivateAsteroid(Collider2D _object)
     {
-        Rigidbody2D _rigidbody = _object.GetComponent<Rigidbody2D>();
+        var _rigidbody = _object.GetComponent<Rigidbody2D>();
+
+        _rigidbody.Sleep();
 
         _rigidbody.velocity = Vector2.zero;
     }

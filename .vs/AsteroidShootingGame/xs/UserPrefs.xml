@@ -1,0 +1,16 @@
+﻿<Properties StartupConfiguration="{C4EAF316-4000-93BD-A6F7-7122636B847E}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Script/GameManager.cs">
+    <Files>
+      <File FileName="Assets/Script/ShipBehavior.cs" Line="149" Column="2" />
+      <File FileName="Assets/Script/UIManager.cs" Line="58" Column="1" />
+      <File FileName="Assets/Script/GameManager.cs" Line="42" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.AsteroidShootingGame PreferredExecutionTarget="Unity.Editor" />
+  <MultiItemStartupConfigurations />
+</Properties>

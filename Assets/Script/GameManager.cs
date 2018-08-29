@@ -3,36 +3,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour 
+public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
-    
-    [Header("Asteroid Prefab")]
-    public GameObject m_asteroid;
+   
 
-    [Header("")]
-    public int m_spaceBetweenAsteroids, m_matrix;
-    public float m_shipStartingTime;
+    [SerializeField]
+    public Grid grid;
+
+    public GameObject m_asteroid;
+    public int m_spaceBetweenAsteroids;
+    public int m_amountOfAsteroides;
+    public float m_shipStartingTime, m_asteroidDelayTime;
+
+    public GameObject m_border;
+
+    private Vector3[] m_positions;
 
     private void Awake()
     {
         if (instance == null)
             instance = this;
+
+        Screen.SetResolution(grid.m_width, grid.m_height, false);
     }
 
-	// Use this for initialization
-	void Start () 
+    // Use this for initialization
+    void Start()
     {
-        ShipBehavior.instance.gameObject.SetActive(false);
+        //var resolution = Screen.currentResolution;
 
-        Screen.SetResolution(640, 480, true);
+        var x = grid.m_width;//resolution.width;
 
-        StartCoroutine(ManageAsteroids(m_shipStartingTime/20));
+        var y = grid.m_height;//resolution.height;
+
+        x *= 4;
+
+        y *= 4;
+
+        ArrangeBorders(x, y);
+
+        ManagePlayerPosition(x, y);
+
+        x = grid.m_width;//resolution.width;
+
+        y = grid.m_height;//resolution.height;
+
+        m_amountOfAsteroides = x * y;
+
+        m_positions = GetPoistions();
+
+        StartCoroutine(ManageAsteroids(m_asteroidDelayTime));
 
         StartCoroutine(CountDownDisable());
 
         StartCoroutine(ActiveController());
-	}
+    }
 
     IEnumerator ActiveController()
     {
@@ -42,31 +68,98 @@ public class GameManager : MonoBehaviour
 
     IEnumerator CountDownDisable()
     {
-        yield return new WaitForSeconds(m_shipStartingTime-1);
+        yield return new WaitForSeconds(m_shipStartingTime - 1);
         UIManager.instance.m_countDownPanal.SetActive(false);
     }
-	
-    IEnumerator ManageAsteroids(float wait)
+
+    Vector3[] GetPoistions()
     {
-        yield return new WaitForSeconds(wait);
+        var matrix = (int)Mathf.Sqrt(m_amountOfAsteroides);
 
-        int
-        matrix = (int)Mathf.Sqrt(m_matrix),
-        x = 0,
-        y = 0;
+        var x = transform.position.x;
+        var y = transform.position.y;
 
-        for (int row = 0; row < matrix; row++)
+        var a_positions = new List<Vector3>();
+
+        for (int row = 0; row < matrix - 1; row++)
         {
-            yield return new WaitForSeconds(0.0005f);
-            for (int column = 0; column < matrix; column++)
+            for (int column = 0; column < matrix - 1; column++)
             {
-                Instantiate(m_asteroid, new Vector3(x, y, 2f), Quaternion.identity);
+                a_positions.Add(new Vector3(x, y, 2f));
 
                 x += m_spaceBetweenAsteroids;
             }
 
-            x = 0;
+            x = transform.position.x;
             y += m_spaceBetweenAsteroids;
         }
+
+        return a_positions.ToArray();
     }
+
+    int d = 0;
+
+    IEnumerator ManageAsteroids(float wait)
+    {
+        for (int i = 0; i < m_positions.Length;)
+        {
+            yield return new WaitForSeconds(wait);
+
+            for (int _i = 0; _i < m_positions.Length / 5; _i++)
+            {
+                if (i >= m_positions.Length)
+                    break;
+
+                Instantiate(m_asteroid, m_positions[i], Quaternion.identity);
+                d++;
+                i++;
+            }
+        }
+
+        Debug.Log("Done: " + d);
+    }
+
+    private void ManagePlayerPosition(int x, int y)
+    {
+        transform.position = new Vector3(x / -1.5f, y / 5, 0);
+
+        ShipBehavior.instance.gameObject.SetActive(false);
+
+        ShipBehavior.instance.transform.position = new Vector3(0, (y + x) / 2, 2);
+        Camera.main.transform.position = new Vector2(0, (y + x) / 2);
+        UIManager.instance.transform.position = new Vector2(0, (y + x) / 2);
+    }
+
+    private void ArrangeBorders(int x, int y)
+    {
+        var topBorderPosition = new Vector2(0, y + x);
+        var footerBorderPosition = new Vector2(0, 0);
+        var rightBorderPosition = new Vector2(x, y);
+        var leftBorderPosition = new Vector2(-x, y);
+
+        var borderSize = new Vector3(x * 2, y / 10, 1);
+
+        var top = Instantiate(m_border, topBorderPosition, Quaternion.identity);
+        top.transform.localScale = borderSize;
+        top.name = "Top";
+
+        var down = Instantiate(m_border, footerBorderPosition, Quaternion.identity);
+        down.transform.localScale = borderSize;
+        down.name = "Down";
+
+        var right = Instantiate(m_border, rightBorderPosition, Quaternion.Euler(0, 0, 90));
+        right.transform.localScale = borderSize;
+        right.name = "Right";
+
+        var left = Instantiate(m_border, leftBorderPosition, Quaternion.Euler(0, 0, 90));
+        left.transform.localScale = borderSize;
+        left.name = "Left";
+
+    }
+}
+
+[System.Serializable]
+public class Grid
+{
+    public int m_width, m_height;
 }

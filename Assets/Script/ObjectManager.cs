@@ -7,18 +7,9 @@ public enum Pool
     Bullet,
 };
 
-public class ObjectManager : MonoBehaviour 
+public class ObjectManager : MonoBehaviour
 {
     public GameObject[] m_objects;
-
-    public static ObjectManager instance = null;
-
-    //Awake is always called before any Start functions
-    void Awake()
-    {
-        if (instance == null)
-            instance = this;
-    }
 
     // Use this for initialization
     internal List<GameObject> GetPool(Pool a_pool, int a_amount)

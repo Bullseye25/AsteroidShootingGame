@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class UIManager : MonoBehaviour 
+public class UIManager : MonoBehaviour
 {
     public static UIManager instance = null;
     private Text m_scoreText, m_gameState, m_finalScore;
@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
             instance = this;
 
         m_finalScore = GameObject.Find("YourScore").GetComponent<Text>();
+
         m_scoreText = GameObject.Find("Score").GetComponent<Text>();
 
         m_gameState = GameObject.Find("GameState").GetComponent<Text>();
@@ -30,13 +31,13 @@ public class UIManager : MonoBehaviour
     {
         m_score++;
 
-        if (m_score == GameManager.instance.m_matrix)
+        if (m_score == GameManager.instance.m_amountOfAsteroides)
         {
             GameEndStats("Congratulations You Won!!");
         }
         else
         {
-            m_scoreText.text = "Score: " + m_score;   
+            m_scoreText.text = "Score: " + m_score;
         }
     }
 
@@ -44,7 +45,7 @@ public class UIManager : MonoBehaviour
     {
         m_gameState.text = _state;
 
-        m_finalScore.text = "Your Final Score: " +m_score;
+        m_finalScore.text = "Your Final Score: " + m_score;
 
         m_gameEndPanel.SetActive(true);
     }

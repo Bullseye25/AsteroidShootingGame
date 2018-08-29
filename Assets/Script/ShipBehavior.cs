@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShipBehavior : MonoBehaviour 
+public class ShipBehavior : MonoBehaviour
 {
     public static ShipBehavior instance = null;
 
@@ -11,6 +11,8 @@ public class ShipBehavior : MonoBehaviour
     private List<GameObject> m_bullets = new List<GameObject>();
 
     private Controller m_controller;
+
+    private ObjectManager m_objectManager;
 
     private Rigidbody2D m_rigidbody;
 
@@ -31,15 +33,16 @@ public class ShipBehavior : MonoBehaviour
         m_cam = FindObjectOfType<Camera>();
         m_controller = FindObjectOfType<Controller>();
         m_rigidbody = GetComponent<Rigidbody2D>();
+        m_objectManager = GetComponent<ObjectManager>();
 
-        m_bullets = ObjectManager.instance.GetPool(Pool.Bullet, (int)m_amountOfBullets);
+        m_bullets = m_objectManager.GetPool(Pool.Bullet, (int)m_amountOfBullets);
 
         StartCoroutine(Shoot());
 
         StartCoroutine(CamMovement());
     }
 
-    void FixedUpdate()
+    void Update()
     {
         Controls();     // allow to use controller  
     }
@@ -59,9 +62,9 @@ public class ShipBehavior : MonoBehaviour
 
     private GameObject GetBullet()
     {
-        foreach(GameObject bullet in m_bullets)
+        foreach (GameObject bullet in m_bullets)
         {
-            if(!bullet.activeInHierarchy)
+            if (!bullet.activeInHierarchy)
             {
                 return bullet;
             }
